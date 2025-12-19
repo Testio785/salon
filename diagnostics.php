@@ -31,7 +31,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <title>Диагностика базы данных</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css">
     <style>
         body { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
         pre { background: #0c1117; color: #dbe2ec; padding: 12px; border-radius: 8px; overflow-x: auto; }

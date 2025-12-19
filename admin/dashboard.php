@@ -3,7 +3,7 @@ require_once __DIR__ . '/../config.php';
 ensure_session();
 $user = current_user();
 if (!$user || ($user['role'] ?? 'client') !== 'admin') {
-    header('Location: /index.php');
+    header('Location: ../index.php');
     exit;
 }
 
@@ -19,7 +19,7 @@ $masters = $pdo->query('SELECT id, name, specialty, phone FROM masters ORDER BY 
 <head>
     <meta charset="UTF-8">
     <title>Дашборд администратора — Нефертити</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -27,8 +27,8 @@ $masters = $pdo->query('SELECT id, name, specialty, phone FROM masters ORDER BY 
         <div class="container flex-between">
             <div class="brand"><span class="brand-mark">N</span><div><div class="brand-name">Нефертити</div><div class="brand-sub">Дашборд администратора</div></div></div>
             <div class="nav-actions">
-                <a class="ghost" href="/index.php">На сайт</a>
-                <a class="cta" href="/api/logout.php">Выйти</a>
+                <a class="ghost" href="../index.php">На сайт</a>
+                <a class="cta" href="../api/logout.php">Выйти</a>
             </div>
         </div>
     </header>

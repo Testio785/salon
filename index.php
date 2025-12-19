@@ -35,7 +35,7 @@ $user = current_user();
                 <span class="user-pill">👤 <?php echo htmlspecialchars($user['name']); ?> (<?php echo htmlspecialchars($user['role']); ?>)</span>
                 <button class="ghost" id="logoutBtn">Выйти</button>
                 <?php if (($user['role'] ?? 'client') === 'admin'): ?>
-                    <a class="cta ghost" href="/admin/dashboard.php">Дашборд</a>
+                    <a class="cta ghost" href="admin/dashboard.php">Дашборд</a>
                 <?php endif; ?>
             <?php else: ?>
                 <button class="ghost" id="openLogin">Войти</button>
@@ -213,7 +213,7 @@ $user = current_user();
             <a href="#services">Услуги</a>
             <a href="#booking">Записаться</a>
             <a href="#team">Команда</a>
-            <a href="/admin/dashboard.php">Админ-доступ</a>
+            <a href="admin/dashboard.php">Админ-доступ</a>
         </div>
     </div>
 </footer>
