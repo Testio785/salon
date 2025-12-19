@@ -125,25 +125,37 @@ authModal?.addEventListener('click', (e) => {
 
 loginForm?.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const res = await fetch('/api/login.php', { method: 'POST', body: new FormData(loginForm) });
-  const data = await res.json();
-  if (res.ok) {
-    loginMessage.textContent = 'Успешный вход';
-    location.reload();
-  } else {
-    loginMessage.textContent = data.error || 'Ошибка';
+  loginMessage.textContent = '';
+  try {
+    const res = await fetch('/api/login.php', { method: 'POST', body: new FormData(loginForm) });
+    const data = await res.json();
+    if (res.ok) {
+      loginMessage.textContent = 'Успешный вход';
+      location.reload();
+    } else {
+      loginMessage.textContent = data.error || 'Ошибка';
+    }
+  } catch (err) {
+    console.error(err);
+    loginMessage.textContent = 'Не удалось связаться с сервером';
   }
 });
 
 registerForm?.addEventListener('submit', async (e) => {
   e.preventDefault();
-  const res = await fetch('/api/register.php', { method: 'POST', body: new FormData(registerForm) });
-  const data = await res.json();
-  if (res.ok) {
-    registerMessage.textContent = 'Аккаунт создан';
-    location.reload();
-  } else {
-    registerMessage.textContent = data.error || 'Ошибка';
+  registerMessage.textContent = '';
+  try {
+    const res = await fetch('/api/register.php', { method: 'POST', body: new FormData(registerForm) });
+    const data = await res.json();
+    if (res.ok) {
+      registerMessage.textContent = 'Аккаунт создан';
+      location.reload();
+    } else {
+      registerMessage.textContent = data.error || 'Ошибка';
+    }
+  } catch (err) {
+    console.error(err);
+    registerMessage.textContent = 'Не удалось связаться с сервером';
   }
 });
 
