@@ -198,6 +198,14 @@ function ensure_schema_and_seed(PDO $pdo): void {
 
 function ensure_session(): void {
     if (session_status() === PHP_SESSION_NONE) {
+        $cookiePath = '/';
+        if (!empty($_SERVER['SCRIPT_NAME'])) {
+            $base = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/\\');
+            if ($base && $base !== '.' && $base !== '/') {
+                $cookiePath = $base . '/';
+            }
+        }
+        session_set_cookie_params(['path' => $cookiePath]);
         session_start();
     }
 }

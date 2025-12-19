@@ -23,9 +23,11 @@ const slotHint = document.getElementById('slotHint');
 
 const API_BASE = '';
 
+const fetchOptions = { credentials: 'same-origin' };
+
 async function loadServices() {
   try {
-    const res = await fetch(`${API_BASE}api/services.php`);
+    const res = await fetch(`${API_BASE}api/services.php`, fetchOptions);
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Ошибка загрузки услуг');
     serviceSelect.innerHTML = data.services.map(s => `<option value="${s.id}">${s.name} — ${s.price} ₽ (${s.duration_minutes} мин)</option>`).join('');
@@ -45,7 +47,7 @@ async function loadServices() {
 
 async function loadMasters() {
   try {
-    const res = await fetch(`${API_BASE}api/masters.php`);
+    const res = await fetch(`${API_BASE}api/masters.php`, fetchOptions);
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Ошибка загрузки мастеров');
     masterSelect.innerHTML = data.masters.map(m => `<option value="${m.id}">${m.name} — ${m.specialty}</option>`).join('');
@@ -66,7 +68,7 @@ async function loadMasters() {
 async function loadAppointments() {
   if (!appointmentsList) return;
   try {
-    const res = await fetch(`${API_BASE}api/appointments.php`);
+    const res = await fetch(`${API_BASE}api/appointments.php`, fetchOptions);
     if (res.status === 401) {
       appointmentsList.innerHTML = '<div class="muted">Авторизуйтесь, чтобы видеть записи.</div>';
       return;
@@ -95,7 +97,7 @@ async function checkAvailability() {
   const masterId = masterSelect.value;
   const dateStr = datetimeInput.value.split('T')[0];
   if (!masterId || !dateStr) return;
-  const res = await fetch(`${API_BASE}api/appointments.php?master_id=${masterId}&date=${dateStr}`);
+  const res = await fetch(`${API_BASE}api/appointments.php?master_id=${masterId}&date=${dateStr}`, fetchOptions);
   const data = await res.json();
   if (!Array.isArray(data.booked)) return;
   slotHint.textContent = data.booked.length ? `Занятые слоты: ${data.booked.join(', ')}` : 'Все слоты свободны';
@@ -112,7 +114,7 @@ bookingForm?.addEventListener('submit', async (e) => {
   bookBtn.disabled = true;
   bookingMessage.textContent = 'Создаем запись...';
   const formData = new FormData(bookingForm);
-  const res = await fetch(`${API_BASE}api/appointments.php`, { method: 'POST', body: formData });
+  const res = await fetch(`${API_BASE}api/appointments.php`, { method: 'POST', body: formData, ...fetchOptions });
   const data = await res.json();
   bookBtn.disabled = false;
   if (res.ok) {
@@ -149,7 +151,7 @@ loginForm?.addEventListener('submit', async (e) => {
   e.preventDefault();
   loginMessage.textContent = '';
   try {
-    const res = await fetch(`${API_BASE}api/login.php`, { method: 'POST', body: new FormData(loginForm) });
+    const res = await fetch(`${API_BASE}api/login.php`, { method: 'POST', body: new FormData(loginForm), ...fetchOptions });
     const data = await res.json();
     if (res.ok) {
       loginMessage.textContent = 'Успешный вход';
@@ -167,7 +169,7 @@ registerForm?.addEventListener('submit', async (e) => {
   e.preventDefault();
   registerMessage.textContent = '';
   try {
-    const res = await fetch(`${API_BASE}api/register.php`, { method: 'POST', body: new FormData(registerForm) });
+    const res = await fetch(`${API_BASE}api/register.php`, { method: 'POST', body: new FormData(registerForm), ...fetchOptions });
     const data = await res.json();
     if (res.ok) {
       registerMessage.textContent = 'Аккаунт создан';
@@ -182,7 +184,7 @@ registerForm?.addEventListener('submit', async (e) => {
 });
 
 logoutBtn?.addEventListener('click', async () => {
-  await fetch(`${API_BASE}api/logout.php`);
+  await fetch(`${API_BASE}api/logout.php`, fetchOptions);
   location.reload();
 });
 
