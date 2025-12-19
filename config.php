@@ -229,3 +229,7 @@ function json_response($data, int $status = 200): void {
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode($data);
 }
+
+function json_error_response(Throwable $e, int $status = 500): void {
+    json_response(['error' => $e->getMessage()], $status);
+}

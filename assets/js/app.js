@@ -22,51 +22,71 @@ const registerMessage = document.getElementById('registerMessage');
 const slotHint = document.getElementById('slotHint');
 
 async function loadServices() {
-  const res = await fetch('/api/services.php');
-  const data = await res.json();
-  serviceSelect.innerHTML = data.services.map(s => `<option value="${s.id}">${s.name} — ${s.price} ₽ (${s.duration_minutes} мин)</option>`).join('');
-  servicesGrid.innerHTML = data.services.map(s => `
-    <div class="card service-card">
-      <img src="${s.photo_url}" alt="${s.name}">
-      <h3>${s.name}</h3>
-      <p class="muted">${s.description}</p>
-      <div class="service-meta"><span>${s.duration_minutes} мин</span><strong>${s.price} ₽</strong></div>
-    </div>`).join('');
+  try {
+    const res = await fetch('/api/services.php');
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Ошибка загрузки услуг');
+    serviceSelect.innerHTML = data.services.map(s => `<option value="${s.id}">${s.name} — ${s.price} ₽ (${s.duration_minutes} мин)</option>`).join('');
+    servicesGrid.innerHTML = data.services.map(s => `
+      <div class="card service-card">
+        <img src="${s.photo_url}" alt="${s.name}">
+        <h3>${s.name}</h3>
+        <p class="muted">${s.description}</p>
+        <div class="service-meta"><span>${s.duration_minutes} мин</span><strong>${s.price} ₽</strong></div>
+      </div>`).join('');
+  } catch (err) {
+    console.error(err);
+    if (serviceSelect) serviceSelect.innerHTML = '<option>Невозможно загрузить услуги</option>';
+    if (servicesGrid) servicesGrid.innerHTML = '<div class="muted">Не удалось загрузить услуги. Проверьте подключение к серверу.</div>';
+  }
 }
 
 async function loadMasters() {
-  const res = await fetch('/api/masters.php');
-  const data = await res.json();
-  masterSelect.innerHTML = data.masters.map(m => `<option value="${m.id}">${m.name} — ${m.specialty}</option>`).join('');
-  mastersGrid.innerHTML = data.masters.map(m => `
-    <div class="card master-card">
-      <img src="${m.photo_url}" alt="${m.name}">
-      <h3>${m.name}</h3>
-      <div class="role">${m.specialty}</div>
-      <p class="bio">${m.bio}</p>
-    </div>`).join('');
+  try {
+    const res = await fetch('/api/masters.php');
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Ошибка загрузки мастеров');
+    masterSelect.innerHTML = data.masters.map(m => `<option value="${m.id}">${m.name} — ${m.specialty}</option>`).join('');
+    mastersGrid.innerHTML = data.masters.map(m => `
+      <div class="card master-card">
+        <img src="${m.photo_url}" alt="${m.name}">
+        <h3>${m.name}</h3>
+        <div class="role">${m.specialty}</div>
+        <p class="bio">${m.bio}</p>
+      </div>`).join('');
+  } catch (err) {
+    console.error(err);
+    if (masterSelect) masterSelect.innerHTML = '<option>Невозможно загрузить мастеров</option>';
+    if (mastersGrid) mastersGrid.innerHTML = '<div class="muted">Не удалось загрузить мастеров. Проверьте подключение к серверу.</div>';
+  }
 }
 
 async function loadAppointments() {
   if (!appointmentsList) return;
-  const res = await fetch('/api/appointments.php');
-  if (res.status === 401) {
-    appointmentsList.innerHTML = '<div class="muted">Авторизуйтесь, чтобы видеть записи.</div>';
-    return;
+  try {
+    const res = await fetch('/api/appointments.php');
+    if (res.status === 401) {
+      appointmentsList.innerHTML = '<div class="muted">Авторизуйтесь, чтобы видеть записи.</div>';
+      return;
+    }
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Не удалось получить записи');
+    if (!data.appointments || data.appointments.length === 0) {
+      appointmentsList.innerHTML = '<div class="muted">Записей пока нет.</div>';
+      return;
+    }
+    appointmentsList.innerHTML = data.appointments.map(a => `
+      <div class="item">
+        <div>
+          <div><strong>${a.service_name || ''}</strong> → ${a.master_name || ''}</div>
+          <div class="muted">${new Date(a.appointment_date).toLocaleString('ru-RU')}</div>
+        </div>
+        <span class="badge ${a.status === 'booked' ? 'success' : a.status === 'cancelled' ? 'danger' : 'warning'}">${a.status}</span>
+      </div>`).join('');
+  } catch (err) {
+    console.error(err);
+    appointmentsList.innerHTML = '<div class="muted">Не удалось загрузить записи. Проверьте сервер.</div>';
   }
-  const data = await res.json();
-  if (!data.appointments || data.appointments.length === 0) {
-    appointmentsList.innerHTML = '<div class="muted">Записей пока нет.</div>';
-    return;
-  }
-  appointmentsList.innerHTML = data.appointments.map(a => `
-    <div class="item">
-      <div>
-        <div><strong>${a.service_name || ''}</strong> → ${a.master_name || ''}</div>
-        <div class="muted">${new Date(a.appointment_date).toLocaleString('ru-RU')}</div>
-      </div>
-      <span class="badge ${a.status === 'booked' ? 'success' : a.status === 'cancelled' ? 'danger' : 'warning'}">${a.status}</span>
-    </div>`).join('');
 }
 
 async function checkAvailability() {
