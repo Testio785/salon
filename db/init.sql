@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS appointments (
 );
 
 INSERT INTO users (name, email, phone, password_hash, role) VALUES
-('Администратор', 'admin@nefertiti.ru', '+7 (495) 123-45-67', '$2y$10$e0NRyMlGrCVloBXXtCvSOOrHltMgQs6i80x71NBOhr9uzJ5Fmyc/K', 'admin');
+('Администратор', 'admin@nefertiti.ru', '+7 (495) 123-45-67', '$2y$12$p7AYyxwO4NyCeEib/zHOP.lAnJ9dKRB78acuoi9n4wt1d0XtW2sMq', 'admin');
 
 INSERT INTO masters (name, specialty, bio, photo_url, phone, email, hourly_rate) VALUES
 ('Екатерина Смирнова', 'Парикмахер-стилист', 'Эксперт по блондированию и сложному окрашиванию. Более 8 лет опыта.', 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=800&q=80', '+7 (495) 222-10-01', 'katya@nefertiti.ru', 2500),
